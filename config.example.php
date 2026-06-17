@@ -16,6 +16,9 @@ $backup_all_organization_boards = false;
 // Backup all cards' attachments in a subfolder for each Trello board
 $backup_attachments = false;
 
+// Include archived lists and cards in the backup
+$include_archived = false;
+
 // Where to store the backup files (by default, trello boards JSON files will be stored in this directory)
 $path = dirname(__FILE__);
 

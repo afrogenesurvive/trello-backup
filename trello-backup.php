@@ -125,9 +125,11 @@ echo count($boards) . " boards to backup... \n";
 
 // 5) Backup now!
 foreach ($boards as $id => $board) {
+    $cards_filter = $include_archived ? 'all' : 'open';
+    $lists_filter = $include_archived ? 'all' : 'open';
     $url_individual_board_json = "https://api.trello.com/1/boards/$id?"
         . "actions=all&actions_limit=1000"
-	. "&cards=all&lists=all&members=all&member_fields=all"
+	. "&cards=$cards_filter&lists=$lists_filter&members=all&member_fields=all"
 	. "&card_members=all&checklists=all&fields=all"
         . "&card_member_fields=all"
         . "&card_attachments=true"
@@ -147,7 +149,7 @@ foreach ($boards as $id => $board) {
     
     $filename = $dirname . '.json';
 
-    echo "recording " . (($board->closed) ? 'the closed ' : '') . "board '" . $board->name . "' " . (empty($board->orgName) ? "" : "(within organization '" . $board->orgName . "')") . " in filename $filename ...\n";
+    echo "recording " . (($board->closed) ? 'the closed ' : '') . "board '" . $board->name . "' " . (empty($board->orgName) ? "" : "(within organization '" . $board->orgName . "')") . ($include_archived ? " (including archived lists and cards)" : "") . " in filename $filename ...\n";
     $response = file_get_contents($url_individual_board_json, false, $ctx);
     $decoded = json_decode($response);
     if (empty($decoded)) {
