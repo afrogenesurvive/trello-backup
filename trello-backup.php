@@ -182,7 +182,15 @@ foreach ($boards as $id => $board) {
             $i = 1;
             foreach ($attachments as $url => $name) {
                 $pathForAttachment = $dirname . '/' . sanitize_file_name($name);
-                file_put_contents($pathForAttachment, file_get_contents($url, false, $attachmentsCtx));
+                $src = fopen($url, 'rb', false, $attachmentsCtx);
+                $dst = fopen($pathForAttachment, 'wb');
+                if ($src && $dst) {
+                    stream_copy_to_stream($src, $dst);
+                    fclose($src);
+                    fclose($dst);
+                } else {
+                    echo "\t$i) Failed to download: $name\n";
+                }
                 echo "\t" . $i++ . ") " . $name . " in " . $pathForAttachment . "\n";
             }
         }
